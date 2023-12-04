@@ -11,3 +11,4 @@ The OpenMSLA printer uses a Raspberry Pi which runs that main control software. 
 
 ### TODO
 - Covers need to be extended around the perimeter of the frame to prevent light bleed from the LED curing array.
+- Make rear cover for the Raspberry Pi
