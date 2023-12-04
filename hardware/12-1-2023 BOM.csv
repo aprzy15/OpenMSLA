@@ -1,0 +1,18 @@
+name,Manufacturer,vendor,package qty,order qty,price,total price,description,link
+15x15x300mm Al extrusion,MakerBeam,MakerBeam,4,3, $12.36 , $37.08 ,frame extrusion,https://www.makerbeam.com/openbeam-300mm-4p-black-openbeam.html
+15x15x272mm Al extrusion,MakerBeam,MakerBeam,4,1, $14.39 , $14.39 ,frame extrusion,https://www.makerbeam.com/openbeam-300mm-4p-black-openbeam.html
+15x15mm t-slot nuts,MakerBeam,MakerBeam,50,2, $15.73 , $31.46 ,frame t-slot nuts,https://www.makerbeam.com/t-slot-nuts-for-makerbeamxl-50p.html
+15x15x60mm Al extrusion,MakerBeam,MakerBeam,4,2, $3.97 , $7.94 ,frame extrusion,https://www.makerbeam.com/openbeam-60mm-4p-black-openbeam.html
+15x15mm corner bracket,MakerBeam,MakerBeam,12,1, $19.47 , $19.47 ,frame brackets,https://www.makerbeam.com/openbeam-corner-cubes-black-12p-for-makerbeamxl-or.html
+SKR V1.4 Control Board,BIGTREETECH,Amazon,1,1, $44.99 , $44.99 ,BIGTREETECH SKR V1.4 Turbo Control Board,https://www.amazon.com/dp/B082QR5YQ5?ref=ppx_yo2ov_dt_b_product_details&th=1
+Raspberry Pi 4,Raspberry Pi,Adafruit,1,1, $55.00 , $55.00 ,Raspberry Pi 4 Model B - 4 GB RAM,https://www.adafruit.com/product/4296
+Buck converter,DROK,Amazon,1,1, $12.99 , $12.99 ,12V to 5V DC-DC buck converter,https://www.amazon.com/dp/B07SS6XTZY?ref=ppx_yo2ov_dt_b_product_details&th=1
+DC power jack,Lsgoodcare,Amazon,20,1, $13.99 , $13.99 ,Panel pount DC input power jack,https://www.amazon.com/dp/B08LQ3SB3F?psc=1&ref=ppx_yo2ov_dt_b_product_details
+Thermal pad,OwlTree,Amazon,4,1, $11.99 , $11.99 ,Thermal conductive pad,https://www.amazon.com/dp/B096ZNHY8F?psc=1&ref=ppx_yo2ov_dt_b_product_details
+USB panel mount,JUXNICE,Amazon,2,1, $12.99 , $12.99 ,USB panel mount jack,https://www.amazon.com/dp/B09SQ7K7QP?ref=ppx_yo2ov_dt_b_product_details&th=1
+Micro HDMI cable,Rulykar,Amazon,1,1, $23.99 , $23.99 ,1.5ft micro to standard HDMI cord,https://www.amazon.com/dp/B09P3GMFYX?ref=ppx_yo2ov_dt_b_product_details&th=1
+SSR-100,Jingzheng,Amazon,1,1, $18.12 , $18.12 ,DC-DC solid state relay,https://www.amazon.com/dp/B08FHRT6GZ?psc=1&ref=ppx_yo2ov_dt_b_product_details
+M3 metric screw kit,Kadrick,Amazon,1290,1, $23.97 , $23.97 ,M3 button head machine screw kit,https://www.amazon.com/Kadrick-Aassortment-4mm-40mm-Commonly-Stainless/dp/B0BPFXP2M9/ref=sr_1_6?crid=2YY57U0L0SVBE&keywords=M3%2Bbolt%2Bkit%2Bbutton%2Bhead&qid=1701661022&s=industrial&sprefix=m3%2Bbolt%2Bkit%2Bbutton%2Bhea%2Cindustrial%2C75&sr=1-6&th=1
+Sonic Mighty 4K,Phrozen,Phrozen,1,1, $409.99 , $409.99 ,Phrozen Sonic Mighty 4K Resin 3D Printer,https://phrozen3d.com/products/sonic-mighty-4k
+LCD mask,SUMAOPAI,AliExpress,1,1, $179.00 , $179.00 ,9.25in 6K Monochrome LCD,https://www.aliexpress.us/item/3256804234097190.html?pdp_npi=3%40dis%21USD%21US%20%2445.00%21US%20%2445.00%21%21%21%21%21%40211b88f016891214525008524eb211%2112000029124679504%21sh%21US%212698138871&gatewayAdapt=glo2usa
+LCD driver,SUMAOPAI,AliExpress,1,1, $45.00 , $45.00 ,LCD driver board,https://www.aliexpress.us/item/3256804234097190.html?pdp_npi=3%40dis%21USD%21US%20%2445.00%21US%20%2445.00%21%21%21%21%21%40211b88f016891214525008524eb211%2112000029124679504%21sh%21US%212698138871&gatewayAdapt=glo2usa

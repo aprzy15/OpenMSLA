@@ -1,0 +1,22 @@
+{
+  "version":"0.1",
+  "encoder": {
+    "clk_pin": 17,
+    "dt_pin": 18,
+    "sw_pin": 23
+  },
+  "lcd_hmi": {
+    "i2c_expander": "PCF8574",
+    "address": 39,
+    "port": 1,
+    "cols": 20,
+    "rows": 4,
+    "dotsize": 8
+  },
+  "file_location":  "/home/usbdrive",
+  "max_z": 300,
+  "controller_port": "/dev/ttyACM0",
+  "z_steps_per_mm": 1609,
+  "file_extension": ".msla",
+  "logging_level": "WARNING"
+}
