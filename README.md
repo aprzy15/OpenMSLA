@@ -8,7 +8,7 @@ The purpose of the OpenMSLA project is to build an open-source, Python controlle
 ## Why?
 
 - As opposed to FDM 3D printing where there is a wide offering of open source 3D printers, almost all commercially available resin printers are closed source.
-- Nearly all MSLA resin printers operate on macro based architecture where mahcine parameters are defined on a layerwise basis and these parameters are duplicated for use in every subsequent layer.
+- Nearly all MSLA resin printers operate on a macro based architecture where machine parameters are defined on a layerwise basis and these parameters are duplicated for use in every subsequent layer.
   - This does not allow the operate to customize printing parameters beyond very simple ones.
 
 ## Objective
