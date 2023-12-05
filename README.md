@@ -1,6 +1,10 @@
 # OpenMSLA
 Open-source resin 3D printer based on masked stereolithography (MSLA) technology
 
+<p align="center" width="100%">
+    <img width="50%" src="https://github.com/aprzy15/OpenMSLA/assets/14866378/3afdbae5-4cf5-41a5-a1d6-98fb88577dc2">
+</p>
+
 ## Purpose
 
 The purpose of the OpenMSLA project is to build an open-source, Python controlled 3D printer that provides operators with an extremely high level of control over printer operation.
