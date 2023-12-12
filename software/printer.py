@@ -11,14 +11,15 @@ from controller_display import Display
 from controller_ui import UiController
 import logging
 
+
 class Printer:
     def __init__(self, cfg_path):
         self.archive = None
+        self.init_pubsub()
         self.cfg = MachineConfig(cfg_path)
         self.controller = GcodeController(self.cfg)
         self.ui = UiController(self.cfg)
         self.display = Display(self.cfg)
-        self.init_pubsub()
 
     def init_pubsub(self):
         pub.subscribe(self.z_home, 'z_home')
@@ -148,7 +149,7 @@ class PrintFile:
 
 
 if __name__ == '__main__':
-    cfg_path = r'./machine_config.json'
+    cfg_path = r'./config/machine_config.json'
     printer = Printer(cfg_path)
 
     # printer.start_macro()

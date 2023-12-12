@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" remoteFilesAllowedToDisappearOnAutoupload="false">
+  <component name="PublishConfigData" autoUpload="Always" serverName="admin@192.168.0.61:22 password (4)" remoteFilesAllowedToDisappearOnAutoupload="false" confirmBeforeUploading="false">
+    <option name="confirmBeforeUploading" value="false" />
     <serverData>
       <paths name="admin@192.168.0.10:22 password">
         <serverdata>
@@ -37,6 +38,14 @@
           </mappings>
         </serverdata>
       </paths>
+      <paths name="admin@192.168.0.61:22 password (4)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/home/admin/firmware " local="$PROJECT_DIR$" />
+          </mappings>
+        </serverdata>
+      </paths>
     </serverData>
+    <option name="myAutoUpload" value="ALWAYS" />
   </component>
 </project>

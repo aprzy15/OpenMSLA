@@ -1,60 +1,6 @@
 import os
 from pubsub import pub
 import numpy as np
-import subprocess
-import json
-import logging
-
-def find_drive(d, target):
-    devices = d['blockdevices']
-    for device in devices:
-        children = device['children']
-        for child in children:
-            name = child['name']
-            label = child['label']
-            if label == target:
-                return name
-    return None
-
-
-
-class StateMachine:
-    def __init__(self, cfg, lcd):
-        self.state = None
-        self.macros = []
-        self.fname = ''
-        self.current_layer = 0
-        self.max_layer = 1
-        self.is_changed = False
-        self.is_homed = False
-        self.z_pos = 0
-        self.files = []
-        self.cfg = cfg
-        self.lcd = lcd
-        self.navigate(MainPage)
-
-    def navigate(self, class_obj):
-        self.state = class_obj(self)
-        self.state.update_screen()
-
-    def load_files(self):
-        self.files = []
-        res = subprocess.check_output(f"lsblk -o name,label --json", shell=True).decode()
-        d = json.loads(res)
-        # TODO search dictionary for thumb label, return device name
-        label = 'thumb'
-        port = find_drive(d, label)
-        if port is None:
-            print(f'Error: Cannot locate drive label: {label}')
-            return
-        os.system(f"sudo mount -t exfat /dev/{port} /home/usbdrive")
-        raw_files = os.listdir(self.cfg.build_folder)
-        print(raw_files)
-        for file in raw_files:
-            if os.path.splitext(file)[1] == self.cfg.file_ext:
-                self.files.append(file)
-            elif os.path.splitext(file)[1] == '.gcode':
-                self.macros.append(file)
 
 
 class AbstractPage:
@@ -151,7 +97,7 @@ class FilePage(GenericListPage):
         for file in files:
             name = file
             if len(file) > context.cfg.lcd_cols:
-                name = file[:context.cfg.lcd_cols-1]
+                name = file[:context.cfg.lcd_cols - 1]
             d = {'name': name, 'file': file, 'page': PrintingPage}
             page_list.append(d)
         page_list.append({'name': 'Back', 'file': None, 'page': MainPage})
@@ -176,10 +122,10 @@ class MacroPage(GenericListPage):
         for macro in macros:
             name = macro
             if len(macro) > context.cfg.lcd_cols:
-                name = macro[:context.cfg.lcd_cols-1]
+                name = macro[:context.cfg.lcd_cols - 1]
             d = {'name': name, 'file': macro, 'page': PrintingPage}
             page_list.append(d)
-        page_list.append({'name': 'Back', 'file': None,'page': MainPage})
+        page_list.append({'name': 'Back', 'file': None, 'page': MainPage})
         super().__init__(context, page_list)
 
     def enter(self):
@@ -187,8 +133,8 @@ class MacroPage(GenericListPage):
         page = d['page']
         file = d['file']
         self.context.fname = file
+        self.context.navigate(page)
         if file is not None:
-            self.context.navigate(page)
             fpath = os.path.join(self.context.cfg.build_folder, file)
             pub.sendMessage('start_macro', fpath=fpath)
 
@@ -230,7 +176,7 @@ class CancelPage(AbstractPage):
         self.lcd.write_string(' ')
         self.lcd._set_cursor_pos((2, 0))
         self.lcd.write_string(' ')
-        self.lcd._set_cursor_pos((self.index+1, 0))
+        self.lcd._set_cursor_pos((self.index + 1, 0))
         self.lcd.write_string('>')
 
     def enter(self):
