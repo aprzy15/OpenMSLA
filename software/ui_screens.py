@@ -112,6 +112,7 @@ class FilePage(GenericListPage):
             self.context.fname = file
             fpath = os.path.join(self.context.cfg.build_folder, file)
             pub.sendMessage('start_print', fpath=fpath)
+            self.context.navigate(PrintingPage)
 
 
 class MacroPage(GenericListPage):

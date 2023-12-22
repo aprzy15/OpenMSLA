@@ -10,18 +10,6 @@ import json
 from ui_screens import MainPage, PrintingPage
 
 
-def find_drive(d, target):
-    devices = d['blockdevices']
-    for device in devices:
-        children = device['children']
-        for child in children:
-            name = child['name']
-            label = child['label']
-            if label == target:
-                return name
-    return None
-
-
 class Encoder:
     def __init__(self, cfg):
         self.sw_last_state = -1
@@ -112,14 +100,6 @@ class UiController:
 
     def load_files(self):
         self.files = []
-        res = subprocess.check_output(f"lsblk -o name,label --json", shell=True).decode()
-        d = json.loads(res)
-        label = 'thumb'
-        port = find_drive(d, label)
-        if port is None:
-            print(f'Error: Cannot locate drive label: {label}')
-            return
-        os.system(f"sudo mount -t exfat /dev/{port} /home/usbdrive")
         raw_files = os.listdir(self.cfg.build_folder)
         print(raw_files)
         for file in raw_files:

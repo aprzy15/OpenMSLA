@@ -39,7 +39,7 @@ class Printer:
         self.controller.send(f"G0 Z{arg1} F1000\n")
 
     def start_print(self, fpath):
-        self.ui.nav_printing()
+        # self.ui.nav_printing()
         print_file = PrintFile(fpath)
         if not print_file.exists:
             print('File does not exist')

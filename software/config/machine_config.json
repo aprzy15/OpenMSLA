@@ -13,10 +13,10 @@
     "rows": 4,
     "dotsize": 8
   },
-  "file_location":  "/home/usbdrive",
+  "file_location":  "/media/usb",
   "max_z": 300,
   "controller_port": "/dev/ttyACM0",
   "z_steps_per_mm": 1609,
-  "file_extension": ".msla",
+  "file_extension": ".txt",
   "logging_level": "WARNING"
 }
