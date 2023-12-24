@@ -6,6 +6,7 @@ import time
 import json
 import logging
 
+
 class Display:
     def __init__(self, config):
         self.config = config
@@ -13,6 +14,9 @@ class Display:
         self.socket = context.socket(zmq.REQ)
         self.socket.connect('tcp://localhost:5555')
         self.socket.send_multipart([b'get_info'])
+        status = self.socket.poll(timeout=1000)
+        if status == 0:
+            raise ConnectionError('Error connecting to LCD driver')
         message = self.receive()
         d = json.loads(message)
         self.screen_shape = (d['width'], d['height'])
@@ -41,10 +45,10 @@ class Display:
 
 if __name__ == '__main__':
     print('start')
-    im = iio.imread('LCD_test_im.png')
-    im = im[:, :, 0]
+    # im = iio.imread(r'/test_files/test-print/layer000001.png')
+    # im = im[:, :, 0]
     d = Display(None)
-    im = np.full(im.shape, 255)
+    im = np.full((5760, 3600), 255)
     d.show(im)
     t = 0.5
     time.sleep(t)

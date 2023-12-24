@@ -160,3 +160,4 @@ cython_debug/
 #.idea/
 /ex_build_folder/
 /test_files/
+/software/test_files/

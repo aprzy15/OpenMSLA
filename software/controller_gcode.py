@@ -1,6 +1,6 @@
 import serial
 import time
-import logging
+from pubsub import pub
 
 
 class GcodeCommand:
@@ -35,14 +35,28 @@ class GcodeController:
         time.sleep(0.5)
         self._wait_for_gcode_response('ok', 20)
 
-    def execute(self, gcode_str, timeout=60):
-        command = GcodeCommand(gcode_str)
+    def execute(self, command, timeout=60):
         self.send(command.raw_string)
         response = self._wait_for_gcode_response(command.response_code, timeout)
-        if command.is_host_command:
-            return response
-        else:
-            return ''
+        return response
+        # if command.is_host_command:
+        #     return response
+        # else:
+        #     if response:
+        #         return True
+        #     else:
+        #         return False
+
+    def home(self):
+        print('homing')
+        command = GcodeCommand(f"G28 Z\r\n")
+        status = self.execute(command)
+        pub.sendMessage('homing_status', status=status)
+
+    def move_z(self, arg1):
+        print(f'move Z {arg1}')
+        command = GcodeCommand(f"G0 Z{arg1} F1000\n")
+        self.execute(command)
 
     def send(self, gcode_string):
         self.serial.write(str.encode(gcode_string))
@@ -50,16 +64,13 @@ class GcodeController:
     def read(self):
         return self.serial.read_until().decode('ascii').rstrip('\n')
 
-    def wait_for_home(self):
-        return self._wait_for_gcode_response('X', timeout=60)
-
-    def _wait_for_gcode_response(self, response, timeout):
+    def _wait_for_gcode_response(self, response_code, timeout):
         res = self.read()
         t0 = time.time()
-        while not res.startswith(response):
+        while not res.startswith(response_code):
             time.sleep(0.25)
             res = self.read().strip(' ')
             if time.time() - t0 > timeout:
                 print('COMMAND TIMEOUT ERROR')
-                # TODO cancel print if timeout error occurs
+                return None
         return res

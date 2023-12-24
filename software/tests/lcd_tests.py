@@ -36,12 +36,7 @@ def pulse():
 # pygame.display.flip()
 # time.sleep(2.5)
 
-pygame.draw.line(screen, (0, 0, 255), (1001, 0), (1001, 3600), 1)  # H
-pygame.draw.line(screen, (255, 0, 0), (1000, 0), (1000, 3600), 1)  # H
-pygame.draw.line(screen, (255, 255, 255), (0, 2500), (1500, 2500), 1)  # V
-pygame.display.flip()
-time.sleep(1)
-
+screen.fill((0,0,0))
 for i in range(1000):
     print(i)
     # pygame.draw.line(screen, (255, 255, 255), (0, 0), (1920, 3600), 1)

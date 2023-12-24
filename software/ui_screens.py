@@ -30,7 +30,6 @@ class GenericListPage:
         self.cur_index = 0
         self.last_index = 0
         self.page_list = page_list
-        # self.update_screen()
 
     def update(self, index):
         if index == self.last_index:
@@ -79,10 +78,10 @@ class GenericListPage:
 class MainPage(GenericListPage):
     def __init__(self, context):
         page_list = [
-            {'name': 'Info', 'page': ZAdjust},
-            {'name': 'Adjust Z', 'page': ZAdjust},
+            {'name': 'Info', 'page': ZAdjustPage},
+            {'name': 'Adjust Z', 'page': ZAdjustPage},
             {'name': 'Load Files', 'page': FilePage},
-            {'name': 'Home Z', 'page': HomePage},
+            {'name': 'Home Z', 'page': HomingPage},
             {'name': 'Macros', 'page': MacroPage},
         ]
         super().__init__(context, page_list)
@@ -98,21 +97,20 @@ class FilePage(GenericListPage):
             name = file
             if len(file) > context.cfg.lcd_cols:
                 name = file[:context.cfg.lcd_cols - 1]
-            d = {'name': name, 'file': file, 'page': PrintingPage}
+            d = {'name': name, 'file': file}
             page_list.append(d)
-        page_list.append({'name': 'Back', 'file': None, 'page': MainPage})
+        page_list.append({'name': 'Back', 'file': None})
         super().__init__(context, page_list)
 
     def enter(self):
         d = self.page_list[self.last_index]
-        page = d['page']
         file = d['file']
-        self.context.navigate(page)
         if file is not None:
             self.context.fname = file
             fpath = os.path.join(self.context.cfg.build_folder, file)
-            pub.sendMessage('start_print', fpath=fpath)
-            self.context.navigate(PrintingPage)
+            pub.sendMessage('printer.start_print', fpath=fpath)
+        else:
+            self.context.navigate(MainPage)
 
 
 class MacroPage(GenericListPage):
@@ -124,38 +122,41 @@ class MacroPage(GenericListPage):
             name = macro
             if len(macro) > context.cfg.lcd_cols:
                 name = macro[:context.cfg.lcd_cols - 1]
-            d = {'name': name, 'file': macro, 'page': PrintingPage}
+            d = {'name': name, 'file': macro}
             page_list.append(d)
-        page_list.append({'name': 'Back', 'file': None, 'page': MainPage})
+        page_list.append({'name': 'Back', 'file': None})
         super().__init__(context, page_list)
 
     def enter(self):
         d = self.page_list[self.last_index]
-        page = d['page']
         file = d['file']
         self.context.fname = file
-        self.context.navigate(page)
         if file is not None:
             fpath = os.path.join(self.context.cfg.build_folder, file)
-            pub.sendMessage('start_macro', fpath=fpath)
+            pub.sendMessage('printer.start_macro', fpath=fpath)
+        else:
+            self.context.navigate(MainPage)
 
 
 class PrintingPage(AbstractPage):
-    def __init__(self, context):
-        print(self.__repr__())
+    def __init__(self, context, print_layers, current_layer, fname):
         super().__init__()
-        self.lcd = context.lcd
-        self.current_layer = 0
         self.context = context
-
-    def update_screen(self):
-        max_layer = self.context.max_layer
-        layer_str = f'{self.context.current_layer} / {max_layer}'
-        num_bars = np.round((self.context.current_layer / max_layer) * self.context.cfg.lcd_cols).astype(int)
+        layer_str = f'{current_layer} / {print_layers}'
+        num_bars = np.round((current_layer / print_layers) * self.context.cfg.lcd_cols).astype(int)
         percent_complete = ''.join(["\xff"] * num_bars)
-        text = '\r\n'.join(['Printing', self.context.fname, layer_str, percent_complete])
-        self.lcd.clear()
-        self.lcd.write_string(text)
+        text = '\r\n'.join(['Printing', fname, layer_str, percent_complete])
+        self.context.lcd.clear()
+        self.context.lcd.write_string(text)
+
+    # def update_screen(self):
+    #     max_layer = self.context.max_layer
+    #     layer_str = f'{self.context.current_layer} / {max_layer}'
+    #     num_bars = np.round((self.context.current_layer / max_layer) * self.context.cfg.lcd_cols).astype(int)
+    #     percent_complete = ''.join(["\xff"] * num_bars)
+    #     text = '\r\n'.join(['Printing', self.context.fname, layer_str, percent_complete])
+    #     self.lcd.clear()
+    #     self.lcd.write_string(text)
 
     def enter(self):
         self.context.navigate(CancelPage)
@@ -184,7 +185,7 @@ class CancelPage(AbstractPage):
         if self.index == 1:
             self.context.navigate(PrintingPage)
         else:
-            pub.sendMessage('cancel_print')
+            pub.sendMessage('printer.cancel_print')
             self.context.navigate(MainPage)
 
     def up(self):
@@ -198,7 +199,7 @@ class CancelPage(AbstractPage):
         self.update_screen()
 
 
-class ZAdjust(AbstractPage):
+class ZAdjustPage(AbstractPage):
     def __init__(self, context):
         super().__init__()
         self.lcd = context.lcd
@@ -213,7 +214,7 @@ class ZAdjust(AbstractPage):
         if self.context.is_homed:
             z_pos = self.context.z_pos + 1
             self.context.z_pos = min([z_pos, self.context.cfg.max_z])
-            pub.sendMessage('z_pos_changed', arg1=self.context.z_pos)
+            pub.sendMessage('ui.z_changed', arg1=self.context.z_pos)
             self.lcd.clear()
             self.lcd.write_string(f'Z Pos: {self.context.z_pos}')
         else:
@@ -224,7 +225,7 @@ class ZAdjust(AbstractPage):
         if self.context.is_homed:
             z_pos = self.context.z_pos - 1
             self.context.z_pos = max([z_pos, 0])
-            pub.sendMessage('z_pos_changed', arg1=self.context.z_pos)
+            pub.sendMessage('ui.z_changed', arg1=self.context.z_pos)
             self.lcd.clear()
             self.lcd.write_string(f'Z Pos: {self.context.z_pos}')
         else:
@@ -232,27 +233,41 @@ class ZAdjust(AbstractPage):
             self.lcd.write_string(f'Z Not Homed')
 
 
-class HomePage(AbstractPage):
+class HomingPage(AbstractPage):
     def __init__(self, context):
         super().__init__()
         self.lcd = context.lcd
-        self.is_homed = False
         self.context = context
         self.lcd.clear()
         self.lcd.write_string('Homing ...')
-        pub.subscribe(self.homed, 'homing_status')
-        pub.sendMessage('z_home')
+        pub.sendMessage('printer.home')
 
-    def homed(self, status):
-        if status:
-            self.lcd.clear()
-            self.lcd.write_string('Homed')
-            self.context.is_homed = True
-            self.context.z_pos = 0
-        else:
-            self.lcd.clear()
-            self.lcd.write_string('Homing Failed')
-            self.context.is_homed = False
+    def enter(self):
+        self.context.navigate(MainPage)
+
+
+class HomedPage(AbstractPage):
+    def __init__(self, context):
+        super().__init__()
+        self.lcd = context.lcd
+        self.context = context
+        self.lcd.clear()
+        self.lcd.write_string('Homed')
+        self.context.is_homed = True
+        self.context.z_pos = 0
+
+    def enter(self):
+        self.context.navigate(MainPage)
+
+
+class HomeFailedPage(AbstractPage):
+    def __init__(self, context):
+        super().__init__()
+        self.lcd = context.lcd
+        self.context = context
+        self.lcd.clear()
+        self.lcd.write_string('Homing Failed')
+        self.context.is_homed = False
 
     def enter(self):
         self.context.navigate(MainPage)

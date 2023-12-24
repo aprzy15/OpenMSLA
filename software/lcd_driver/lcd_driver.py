@@ -9,6 +9,7 @@ import threading
 import queue
 import zmq
 import json
+os.environ["DISPLAY"] = ":0"
 
 
 class LCD:
@@ -18,7 +19,6 @@ class LCD:
         self.width = 0
         self.height = 0
         self.init_connection()
-        os.environ["DISPLAY"] = ":0"
         self.q = queue.Queue()
         threading.Thread(target=self.display_thread, daemon=True).start()
         self.hide()
@@ -57,7 +57,7 @@ class LCD:
         try:
             arr = np.frombuffer(payload, dtype=np.uint8)
             display.show(arr)
-            display.wait_for_command()
+            self.q.join()
             self.socket.send_multipart([b'200', b'Success'])  # Send reply back to client
         except Exception as err:
             self.socket.send_multipart([b'500', bytes(str(err), 'utf-8')])
@@ -79,9 +79,6 @@ class LCD:
         arr = np.zeros((self.width, self.height, 3))
         self.q.put(arr)
 
-    def wait_for_command(self):
-        self.q.join()
-
     def display_thread(self):
         pg.display.init()
         screen = pg.display.set_mode()
@@ -95,8 +92,8 @@ class LCD:
             arr = self.q.get()
             surf = pg.Surface((arr.shape[0], arr.shape[1]))
             pg.surfarray.blit_array(surf, arr)
-            pg.display.flip()
             screen.blit(surf, (0, 0))
+            pg.display.flip()
             self.q.task_done()
 
 

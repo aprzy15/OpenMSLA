@@ -2,13 +2,14 @@ import time
 from RPLCD.i2c import CharLCD
 import threading
 from RPi import GPIO
+from config.config_machine import MachineConfig
 import logging
 import subprocess
 import os
 from pubsub import pub
 import json
-from ui_screens import MainPage, PrintingPage
-
+from ui_screens import *
+from pubsub.utils import printTreeDocs
 
 class Encoder:
     def __init__(self, cfg):
@@ -59,19 +60,25 @@ class UiLCD(CharLCD):
 
 
 class UiController:
-    def __init__(self, cfg):
+    def __init__(self, cfg_path):
+        self.cfg = MachineConfig(cfg_path)
         self.lcd = None
         self.z_pos = None
+        self.is_homed = False
         self.files = []
         self.macros = []
         self.fname = ''
-        self.max_layer = 1
-        self._current_layer = 0
-        self.cfg = cfg
+        self.print_layers = 1
+        self.current_layer = 0
         self.encoder = Encoder(self.cfg)
         self.lcd = UiLCD(self.cfg)
         self.state = MainPage(self)
-        threading.Thread(target=self.main_thread).start()
+        pub.subscribe(self.ps_on_homed, 'homing_status')
+        pub.subscribe(self.ps_on_print_start, 'ui.print_info')
+        pub.subscribe(self.ps_on_layer_start, 'ui.layer_start')
+        pub.subscribe(self.nav_home, 'ui.print_end')
+        self.main_thread()
+        # TODO reset layer counter on start of new print
 
     def nav_home(self):
         self.navigate(MainPage)
@@ -79,18 +86,24 @@ class UiController:
     def nav_printing(self):
         self.navigate(PrintingPage)
 
-    def navigate(self, class_obj):
-        self.state = class_obj(self)
+    def navigate(self, class_obj, **kwargs):
+        self.state = class_obj(self, **kwargs)
         self.state.update_screen()
 
-    @property
-    def current_layer(self):
-        return self._current_layer
+    def ps_on_homed(self, status):
+        if status:
+            self.navigate(HomedPage)
+        else:
+            self.navigate(HomeFailedPage)
 
-    @current_layer.setter
-    def current_layer(self, current_layer):
-        self._current_layer = current_layer
-        self.state.update_screen()
+    def ps_on_print_start(self, print_layers, fname):
+        self.print_layers = print_layers
+        self.fname = fname
+        self.navigate(PrintingPage, print_layers=self.print_layers, fname=self.fname, current_layer=self.current_layer)
+
+    def ps_on_layer_start(self, current_layer):
+        self.current_layer = current_layer
+        self.navigate(PrintingPage, print_layers=self.print_layers, fname=self.fname, current_layer=self.current_layer)
 
     def main_thread(self):
         self.state.update_screen()
@@ -101,7 +114,6 @@ class UiController:
     def load_files(self):
         self.files = []
         raw_files = os.listdir(self.cfg.build_folder)
-        print(raw_files)
         for file in raw_files:
             if os.path.splitext(file)[1] == self.cfg.file_ext:
                 self.files.append(file)

@@ -17,6 +17,6 @@
   "max_z": 300,
   "controller_port": "/dev/ttyACM0",
   "z_steps_per_mm": 1609,
-  "file_extension": ".txt",
+  "file_extension": ".msla",
   "logging_level": "WARNING"
 }
