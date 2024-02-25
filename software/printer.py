@@ -7,11 +7,11 @@ import time
 
 
 class Printer:
-    def __init__(self, cfg_path):
+    def __init__(self, cfg):
         # pub.subscribe(self.home_z, 'printer.home')
         self.cancel_flag = False
         self.archive = None
-        self.cfg = MachineConfig(cfg_path)
+        self.cfg = cfg
         self.controller = GcodeController(self.cfg)
         self.display = Display(self.cfg)
         self.init_pubsub()
@@ -28,9 +28,6 @@ class Printer:
     def home_z(self):
         print('home z host')
         self.controller.home()
-
-    # def z_move(self, arg1):
-    #     self.controller.send(f"G0 Z{arg1} F1000\n")
 
     def start_print(self, fpath):
         print_file = PrintData(fpath)
@@ -52,7 +49,6 @@ class Printer:
                 self.parse_host_command(response, print_file)
         command = GcodeCommand("M106 P0 S0\r\n")
         response = self.controller.execute(command)
-        # TODO light stays on at end of print, requires this additional command
         pub.sendMessage('ui.print_end')
 
     def cancel_print(self):
@@ -76,10 +72,7 @@ class Printer:
         pub.sendMessage('ui.layer_start', current_layer=index)
         img = print_file.get_image(index)
         res = self.display.show(img)
-        print(f'     {res}')
         time.sleep(0.2)  # Only needed if move command is really quick
-
-    # TODO setup logging
 
 
 if __name__ == '__main__':

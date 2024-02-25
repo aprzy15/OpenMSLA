@@ -89,7 +89,6 @@ class MainPage(GenericListPage):
 
 class FilePage(GenericListPage):
     def __init__(self, context):
-        print(self.__repr__())
         context.load_files()
         files = context.files.copy()
         page_list = []

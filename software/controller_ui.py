@@ -60,8 +60,8 @@ class UiLCD(CharLCD):
 
 
 class UiController:
-    def __init__(self, cfg_path):
-        self.cfg = MachineConfig(cfg_path)
+    def __init__(self, cfg):
+        self.cfg = cfg
         self.lcd = None
         self.z_pos = None
         self.is_homed = False
@@ -76,9 +76,12 @@ class UiController:
         pub.subscribe(self.ps_on_homed, 'homing_status')
         pub.subscribe(self.ps_on_print_start, 'ui.print_info')
         pub.subscribe(self.ps_on_layer_start, 'ui.layer_start')
-        pub.subscribe(self.nav_home, 'ui.print_end')
+        pub.subscribe(self.ps_print_end, 'ui.print_end')
         self.main_thread()
-        # TODO reset layer counter on start of new print
+
+    def ps_print_end(self):
+        self.current_layer = 0
+        self.nav_home()
 
     def nav_home(self):
         self.navigate(MainPage)
@@ -113,6 +116,8 @@ class UiController:
 
     def load_files(self):
         self.files = []
+        if not os.path.exists(self.cfg.build_folder):
+            return
         raw_files = os.listdir(self.cfg.build_folder)
         for file in raw_files:
             if os.path.splitext(file)[1] == self.cfg.file_ext:

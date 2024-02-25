@@ -1,5 +1,9 @@
 {
   "version":"0.1",
+  "headless": {
+    "run_headless": false,
+    "filepath": "/home/admin/printer/software/test_files/test-print"
+  },
   "encoder": {
     "clk_pin": 17,
     "dt_pin": 18,
@@ -13,7 +17,7 @@
     "rows": 4,
     "dotsize": 8
   },
-  "file_location":  "/media/usb",
+  "file_location":  "/media/admin/thumb",
   "max_z": 300,
   "controller_port": "/dev/ttyACM0",
   "z_steps_per_mm": 1609,

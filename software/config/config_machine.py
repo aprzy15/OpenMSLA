@@ -12,6 +12,18 @@ class MachineConfig:
         return self.base.get('version')
 
     @property
+    def headless(self):
+        return self.base.get('headless')
+
+    @property
+    def run_headless(self):
+        return self.headless.get('run_headless')
+
+    @property
+    def headless_filepath(self):
+        return self.headless.get('filepath')
+
+    @property
     def build_folder(self):
         return self.base.get('file_location')
 
